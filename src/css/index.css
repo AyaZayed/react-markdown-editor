@@ -19,10 +19,6 @@ html {
   font-family: var(--font-family);
 }
 
-ul {
-  list-style: none;
-}
-
 h1 {
   font-size: var(--h1);
 }
