@@ -36,7 +36,7 @@ export default function Dashboard() {
     }, [])
 
     // user id for the editor page
-    const id = `${user.uid}`
+    const id = `${user.uid}` || 'anon'
     const editorPath = `/editor/${id}`
 
     return (

@@ -11,6 +11,7 @@
   "license": "ISC",
   "devDependencies": {
     "buffer": "^5.7.1",
+    "firebase-tools": "^13.7.3",
     "parcel": "latest",
     "process": "^0.11.10"
   },
