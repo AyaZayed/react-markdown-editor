@@ -2,13 +2,11 @@ import React, { useContext, useState, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import { onSnapshot, collection, getFirestore } from 'firebase/firestore';
 import { FirebaseContext } from '../FirebaseContext'
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 export default function Dashboard() {
     const [docs, setDocs] = useState([])
-
-    // random id for the editor page
-    const id = Math.floor(Math.random() * 1000000000)
-    const editorPath = `/editor/${id}`
+    const [user, setUser] = useState()
 
     // get all documents
     const firebaseApp = useContext(FirebaseContext)
@@ -25,6 +23,21 @@ export default function Dashboard() {
         })
         return () => unsubscribe()
     }, [])
+
+    const auth = getAuth(firebaseApp);
+
+    // get the authenticated user
+    useEffect(() => {
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                setUser(user)
+            }
+        })
+    }, [])
+
+    // user id for the editor page
+    const id = `${user.uid}`
+    const editorPath = `/editor/${id}`
 
     return (
         <main className='dashboard-page'>

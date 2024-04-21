@@ -7,6 +7,7 @@ import { getFirestore, collection, onSnapshot, setDoc, doc } from 'firebase/fire
 export default function Editor() {
 
     const { firebaseApp } = useContext(FirebaseContext)
+    // get route state
     const pageId = useParams().id
 
     const [currentMarkdown, setCurrentMarkdown] = useState({})
