@@ -27,6 +27,7 @@ export default function Dashboard() {
     const auth = getAuth(firebaseApp);
 
     // get the authenticated user
+
     useEffect(() => {
         onAuthStateChanged(auth, user => {
             if (user) {
@@ -35,10 +36,11 @@ export default function Dashboard() {
         })
     }, [])
 
-    // user id for the editor page
-    const id = `${user.uid}` || 'anon'
-    const editorPath = `/editor/${id}`
-
+    function newdoc() {
+        if (user.uid) {
+            window.location.href = `/editor/${user.uid}`
+        }
+    }
     return (
         <main className='dashboard-page'>
             <h1>Dashboard</h1>
@@ -49,7 +51,7 @@ export default function Dashboard() {
                     </li>
                 ))}
             </ul>
-            <NavLink to={editorPath}>Start Writing</NavLink>
+            <button onClick={newdoc}>Start Writing</button>
         </main>
     )
 }
