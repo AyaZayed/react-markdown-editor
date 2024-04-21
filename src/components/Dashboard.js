@@ -6,7 +6,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 export default function Dashboard() {
     const [docs, setDocs] = useState([])
-    const [user, setUser] = useState()
+    const [userId, setUserId] = useState('')
 
     // get all documents
     const firebaseApp = useContext(FirebaseContext)
@@ -31,16 +31,17 @@ export default function Dashboard() {
     useEffect(() => {
         onAuthStateChanged(auth, user => {
             if (user) {
-                setUser(user)
+                setUserId(user.uid)
             }
         })
     }, [])
 
     function newdoc() {
-        if (user.uid) {
-            window.location.href = `/editor/${user.uid}`
+        if (userId) {
+            window.location.href = `/editor/${userId}`
         }
     }
+
     return (
         <main className='dashboard-page'>
             <h1>Dashboard</h1>

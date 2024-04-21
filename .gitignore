@@ -184,3 +184,5 @@ fabric.properties
 
 dist/
 .parcel-cache/
+.firebase/
+.github/
