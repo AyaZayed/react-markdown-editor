@@ -1,17 +1,11 @@
-import React, { useEffect } from 'react'
-import { getAuth, signInAnonymously, onAuthStateChanged } from 'firebase/auth'
+import React, { useContext } from 'react'
+import { getAuth, signInAnonymously } from 'firebase/auth'
+import { FirebaseContext } from '../FirebaseContext'
+
 
 export default function Home() {
-
-    const auth = getAuth()
-
-    useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                const uid = user.uid;
-            }
-        });
-    }, [])
+    const firebaseApp = useContext(FirebaseContext)
+    const auth = getAuth(firebaseApp)
 
     function signIn() {
         signInAnonymously(auth);
