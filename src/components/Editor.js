@@ -1,20 +1,17 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import snarkdown from 'snarkdown'
-import { FirebaseContext } from '../FirebaseContext'
+import { getFirebase } from '../firebase';
 import { useParams } from 'react-router-dom';
-import { getFirestore, collection, onSnapshot, setDoc, doc } from 'firebase/firestore';
+import { collection, onSnapshot, setDoc, doc } from 'firebase/firestore';
 
 export default function Editor() {
-
-    const { firebaseApp } = useContext(FirebaseContext)
-    // get route state
-    const pageId = useParams().id
-
     const [currentMarkdown, setCurrentMarkdown] = useState({})
 
-    const db = getFirestore(firebaseApp)
+    const { firestore } = getFirebase();
 
-    const markdownsCol = collection(db, 'markdowns')
+    const pageId = useParams().id
+
+    const markdownsCol = collection(firestore, 'markdowns')
 
     const thisDoc = doc(markdownsCol, pageId);
 

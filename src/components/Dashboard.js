@@ -1,58 +1,50 @@
-import React, { useContext, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
-import { onSnapshot, collection, getFirestore } from 'firebase/firestore';
-import { FirebaseContext } from '../FirebaseContext'
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getFirebase } from '../firebase';
+import { onSnapshot, collection, setDoc, doc } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 
 export default function Dashboard() {
-    const [docs, setDocs] = useState([])
+    const [markdowns, setMarkdowns] = useState([])
     const [userId, setUserId] = useState('')
 
     // get all documents
-    const firebaseApp = useContext(FirebaseContext)
-    const db = getFirestore(firebaseApp);
-    const markdownsCol = collection(db, 'markdowns');
+    const { firestore, auth } = getFirebase();
+    const markdownsCol = collection(firestore, 'markdowns');
 
-    useEffect(() => {
-        const unsubscribe = onSnapshot(markdownsCol, (querySnapshot) => {
-            const dataDocs = []
-            querySnapshot.forEach((doc) => {
-                dataDocs.push({ ...doc.data(), id: doc.id })
-            })
-            setDocs(dataDocs)
-        })
-        return () => unsubscribe()
-    }, [])
-
-    const auth = getAuth(firebaseApp);
-
-    // get the authenticated user
-
-    useEffect(() => {
-        onAuthStateChanged(auth, user => {
-            if (user) {
-                setUserId(user.uid)
-            }
-        })
-    }, [])
-
-    function newdoc() {
-        if (userId) {
-            window.location.href = `/editor/${userId}`
+    onAuthStateChanged(auth, user => {
+        if (user) {
+            setUserId(user.uid)
+        } else {
+            window.location.href = '/'
         }
+    })
+
+    useEffect(() => {
+        onSnapshot(markdownsCol, (snapshot) => {
+            setMarkdowns(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+        })
+    }, [])
+
+
+    function newMarkdown() {
+        const docToAdd = doc(markdownsCol);
+        setDoc(docToAdd, { docOwnerUid: userId })
+        window.location.href = `/editor/${docToAdd.id}`
     }
 
     return (
         <main className='dashboard-page'>
             <h1>Dashboard</h1>
             <ul>
-                {docs.length !== 0 && docs.map((doc) => (
-                    <li key={doc.id}>
-                        <NavLink to={`/editor/${doc.id}`}>{doc.id}</NavLink>
+                {markdowns.length !== 0 && markdowns.map((markdown) => (
+                    <li key={markdown.id}>
+                        <NavLink to={`/editor/${markdown.id}`}>{markdown.id}</NavLink>
                     </li>
                 ))}
             </ul>
-            <button onClick={newdoc}>Start Writing</button>
+            <button onClick={newMarkdown}>Start Writing</button>
         </main>
     )
 }
+

@@ -1,15 +1,15 @@
-import React, { useContext } from 'react'
-import { getAuth, signInAnonymously } from 'firebase/auth'
-import { FirebaseContext } from '../FirebaseContext'
-
+import { signInAnonymously } from 'firebase/auth';
+import { getFirebase } from '../firebase';
 
 export default function Home() {
-    const firebaseApp = useContext(FirebaseContext)
-    const auth = getAuth(firebaseApp)
+    const { auth } = getFirebase();
 
     function signIn() {
-        signInAnonymously(auth);
-        window.location.href = '/dashboard'
+        signInAnonymously(auth).then(() => {
+            window.location.href = '/dashboard';
+        }).catch((error) => {
+            console.log(error)
+        })
     }
 
     return (
